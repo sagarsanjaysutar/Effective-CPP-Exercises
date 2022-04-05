@@ -1,3 +1,8 @@
+/*!
+ * @brief Experimenting with obscure C++ be code.
+ * @note Picked up from Effective C++ Page 7.
+ */
+
 #include <iostream>
 
 class UndefinedBehavious
