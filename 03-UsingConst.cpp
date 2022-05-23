@@ -2,6 +2,9 @@
 #include <iterator>
 #include <vector>
 #include <string.h>
+#include <sstream>
+#include <ostream>
+#include <cstring>
 
 using std::cout;
 using std::endl;
@@ -9,37 +12,134 @@ using std::endl;
 class WordBlock
 {
 public:
-    explicit WordBlock(std::string word);
     /*!
-     *  Overloading "+" operator. It returns a const value.
+     * Construct to build empty object.
      */
-    std::string operator+(const WordBlock &rhsWord);
+    WordBlock();
+
+    /*!
+     * Constructor to build object like
+     * @code WordBlock obj = "Anyword"; or WordBlock obj("Anyword");
+     */
+    WordBlock(const char *word);
+
+    /*!
+     * Constructor to build object like
+     * @code WordBlock obj = obj0; or WordBlock obj(obj0);
+     */
+    WordBlock(const WordBlock &word);
+
+    std::size_t getWordLen() const;
+
+    /*!
+     * Destructor
+     */
+    ~WordBlock();
+
+    // Operator overloading
+    const std::string operator+(const WordBlock &rhsWord); //!< It returns a const value.
     void operator=(const WordBlock &rhsWord);
+    void operator=(const std::string rhsWord);
+    const char &operator[](std::size_t pos);
+
+    /*!
+     * Had to make it a "friend" function to access the private member var.
+     * This is because the stream operator(<<) has 'ostream' as the first parameter.
+     * Thus it can't be a member function like other operators.
+     * @link https://stackoverflow.com/a/237074/15060921
+     * @link https://stackoverflow.com/a/1905502/15060921
+     */
+    friend std::ostream &operator<<(std::ostream &os, const WordBlock &rhsWord);
 
 private:
     std::string m_word;
+
+    // Making both the var. mutable, so it could be edited in bitwise const function.
+    mutable std::size_t m_wordLength;
+    mutable bool m_wordLengthValid;
+
+    bool setWord(std::string word);
+
+    // Constant(bitwise) member function i.e. it won't change class's member vars. https://stackoverflow.com/a/21478486/15060921
+    std::string getWord() const;
 };
 
-WordBlock::WordBlock(std::string word) : m_word(word) {}
-
-std::string WordBlock::operator+(const WordBlock &rhsWord)
+WordBlock::WordBlock(const char *word) : m_word(word)
 {
-    cout << "Appending " << rhsWord.m_word << " to " << m_word << endl;
-    m_word.append(rhsWord.m_word);
+    cout << "WordBlock: Intializing with a char pointer: " << getWord() << endl;
+}
+
+WordBlock::WordBlock(const WordBlock &word) : m_word(word.getWord())
+{
+    cout << "WordBlock: Intializing with a WordBlock: " << getWord() << endl;
+}
+
+WordBlock::WordBlock()
+{
+    cout << "WordBlock: Intializing with an empty object" << endl;
+}
+
+WordBlock::~WordBlock() {}
+
+bool WordBlock::setWord(std::string word)
+{
+    if (word != m_word)
+    {
+        m_wordLengthValid = false;
+        m_word = word;
+    }
+}
+
+std::string WordBlock::getWord() const
+{
     return m_word;
+}
+
+std::size_t WordBlock::getWordLen() const
+{
+    if (!m_wordLengthValid)
+    {
+        m_wordLength = std::strlen(m_word.c_str());
+        m_wordLengthValid = true;
+    }
+    return m_wordLength;
+}
+
+const std::string WordBlock::operator+(const WordBlock &rhsWord)
+{
+    cout << "WordBlock: Adding " << getWord() << " and " << rhsWord.getWord() << endl;
+    return std::string(m_word + " " + rhsWord.getWord());
 }
 
 void WordBlock::operator=(const WordBlock &rhsWord)
 {
-    cout << "Replacing " << m_word << " with " << rhsWord.m_word << endl;
-    m_word = rhsWord.m_word;
+    cout << "WordBlock: Assigning " << rhsWord.getWord() << " <WordBlock> to object. " << endl;
+    setWord(rhsWord.m_word);
+}
+
+void WordBlock::operator=(const std::string rhsWord)
+{
+    cout << "WordBlock: Assigning " << rhsWord << " <std::string> to object." << endl;
+    setWord(rhsWord);
+}
+
+const char &WordBlock::operator[](std::size_t pos)
+{
+    cout << "WordBlock: Retriving " << pos << "th index value of " << getWord() << endl;
+    return (getWord().at(pos));
+}
+
+std::ostream &operator<<(std::ostream &os, const WordBlock &rhsWord)
+{
+    cout << "WordBlock: Printing " << rhsWord.getWord() << endl;
+    os << rhsWord.getWord();
+    return os;
 }
 
 int main()
 {
 
-    std::vector<int>
-        numbers = {1, 23, 3, 435, 423};
+    std::vector<int> numbers = {1, 23, 3, 435, 423};
 
     // A normal vector iterator that acts as a pointer which points to a certain vector.
     std::vector<int>::iterator iter = numbers.begin();
@@ -66,13 +166,19 @@ int main()
      * Returning a const value from a function.
      * Good idea as client errors are reduced and safety is maintained;
      * See Item 24
+     *
+     * Couldn't reproduce this, even after non-const return from + operator func.
+     * word1 + word2 = word3
      */
-    WordBlock word1("Sagar ");
-    WordBlock word2("Sutar");
-    WordBlock word3("Random");
+    WordBlock word1("Sagar");
+    WordBlock word2 = "Sutar";
+    WordBlock word3(word1);
+    WordBlock word4;
 
-    word2 = word3;
-    cout << "Result" << word1 + word2 << endl; // The addition here returns a const value.
+    word3 = word1 + word2;
+    word4 = word3;
+    cout << word4[3] << endl;
+    cout << word4 << "  - Length: " << word4.getWordLen() << endl;
 
     return 0;
 }
