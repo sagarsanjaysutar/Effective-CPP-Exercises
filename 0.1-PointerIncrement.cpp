@@ -1,7 +1,7 @@
 /*!
- * @brief Picked up from a CV tutorial
- * @link https://github1s.com/opencv/opencv/blob/3.4/samples/cpp/tutorial_code/core/mat_mask_operations/mat_mask_operations.cpp#L95-L96
- * @link https://stackoverflow.com/a/55085988
+ * \brief Picked up from a CV tutorial
+ * \link https://github1s.com/opencv/opencv/blob/3.4/samples/cpp/tutorial_code/core/mat_mask_operations/mat_mask_operations.cpp#L95-L96
+ * \link https://stackoverflow.com/a/55085988
  */
 
 #include <iostream>

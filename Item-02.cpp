@@ -1,6 +1,6 @@
 /*!
- * @brief Trying not to use #define macro.
- * @note Item 2
+ * \brief Trying not to use #define macro.
+ * \note Item 2
  */
 
 /*! #00

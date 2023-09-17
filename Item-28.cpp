@@ -1,5 +1,5 @@
 /**
- * @brief Item 28: Avoid returning "handles" to object internals
+ * \brief Item 28: Avoid returning "handles" to object internals
  * 
  * 1. Object internals can be it's private members. Considering that for user defined classes,
  *  it's better to pass the class's objects by reference, if any of the class's function returns a reference 

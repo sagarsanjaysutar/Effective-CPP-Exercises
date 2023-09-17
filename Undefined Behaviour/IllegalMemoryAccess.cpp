@@ -1,6 +1,6 @@
 /*!
- * @brief Experimenting with obscure C++ code.
- * @note Picked up from Effective C++ Page 7.
+ * \brief Experimenting with obscure C++ code.
+ * \note Picked up from Effective C++ Page 7.
  */
 
 #include <iostream>

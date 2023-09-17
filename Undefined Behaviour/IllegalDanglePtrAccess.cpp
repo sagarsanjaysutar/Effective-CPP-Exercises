@@ -1,8 +1,8 @@
 /**
- * @brief The following code produces an undefined behaviour where we are able to
+ * \brief The following code produces an undefined behaviour where we are able to
  *  access data member of a delete variable. This delete variable is a dangle pointer.
- * @ref https://stackoverflow.com/a/1930474
- * @note Picked up from Effective C++ Page 19
+ * \ref https://stackoverflow.com/a/1930474
+ * \note Picked up from Effective C++ Page 19
 */
 #include <iostream>
 using namespace std;

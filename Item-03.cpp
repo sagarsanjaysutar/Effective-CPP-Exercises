@@ -19,13 +19,13 @@ public:
 
     /*!
      * Constructor to build object like
-     * @code WordBlock obj = "Anyword"; or WordBlock obj("Anyword");
+     * \code WordBlock obj = "Anyword"; or WordBlock obj("Anyword");
      */
     WordBlock(const char *word);
 
     /*!
      * Constructor to build object like
-     * @code WordBlock obj = obj0; or WordBlock obj(obj0);
+     * \code WordBlock obj = obj0; or WordBlock obj(obj0);
      */
     WordBlock(const WordBlock &word);
 
@@ -46,8 +46,8 @@ public:
      * Had to make it a "friend" function to access the private member var.
      * This is because the stream operator(<<) has 'ostream' as the first parameter.
      * Thus it can't be a member function like other operators.
-     * @link https://stackoverflow.com/a/237074/15060921
-     * @link https://stackoverflow.com/a/1905502/15060921
+     * \link https://stackoverflow.com/a/237074/15060921
+     * \link https://stackoverflow.com/a/1905502/15060921
      */
     friend std::ostream &operator<<(std::ostream &os, const WordBlock &rhsWord);
 
