@@ -32,3 +32,4 @@
 *.app
 
 Output
+.vscode/settings.json
