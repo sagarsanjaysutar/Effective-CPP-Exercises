@@ -1,9 +1,8 @@
 /**
  * \brief Item 28: Avoid returning "handles" to object internals
  * 
- * 1. Object internals can be it's private members. Considering that for user defined classes,
- *  it's better to pass the class's objects by reference, if any of the class's function returns a reference 
- *  to the private variable (handler), the encapsulation of the class is broken.
+ * 1. Object internals can be it's private members. If any of the class's functions return a reference 
+ *  to a private variable (handler) then the encapsulation of that class is broken.
  *  The client now has reference to class's private member. 
 */
 
@@ -16,7 +15,8 @@ private:
     int m_num = 5;
 public:
     // Function returning a reference to private variable.
-    int &getNumber() { return m_num; }    
+    int &getNumber() { return m_num; }   
+    const int& getConstNumber() { return m_num; } 
 };
 
 int main()
@@ -29,7 +29,10 @@ int main()
     ++(*numPtr);
     cout << "Number: " << *numPtr << "\t" << obj.getNumber() << endl;
 
-    // // 02. Trying the same with const class
-    // const Number constObj;
-    // cout << "Const Number: " << *numPtr << "\t" << constObj.getNumber() << endl;
+    // 02. The above problem can be solved by returning a const private var. 
+    const int* numConstPrt = &obj.getConstNumber();  
+    // ++(*numConstPrt); This now fails. 
+    cout << "Const Number: " << *numConstPrt << endl;
+    
+    
 }
