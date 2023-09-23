@@ -4,6 +4,7 @@
  * Benefits:
  * 1. Semantic (syntactical) constraint is provided to the object i.e. const keyword.
  * 2. 
+ * 
  */
 
 #include <iostream>
@@ -40,22 +41,47 @@ public:
     static const int NumOfMonths = 12;
 
     /**
-     * \brief This is an unsafe function as it return's a private pointer member. 
+     * \brief This demonstrates bitwise const.
+     * This is an unsafe function as it return's a private pointer member. 
      * This member function passes the compiler's "bitwise" const pre-check, but this function doesn't ACT const.
      * Refer typesOfConst() example.
+     * 
+     * \ref https://stackoverflow.com/a/8788917
     */
-    std::string* getFirstMonthName() const{
+    std::string* getMonthNamePtr() const{
         return m_monthArrPtr;
     }
 
     /**
-     * \brief Still an unsafe function as it return's a private pointer members,
-     * but notice that despite being a const function, we can assign values to member variables. 
-     * This demonstrates logical const.
+     * \brief This demonstrates logical const.
+     * Still an unsafe function as it return's a private pointer members,
+     * but notice that despite being a const function, we can assign values to member variables.
+     * Refer typesOfConst() example.
     */
-    std::string* getMonthName(int monthNum) const{
+    std::string* getMonthNamePtr(int monthNum) const{
         m_mutableMonthArrPtr = &m_mutableMonthArr[monthNum];
         return m_mutableMonthArrPtr;
+    }
+
+    /**
+     * \brief Const function. This directly gets called if `const Generic obj` is declared.
+    */
+    const std::string& getValidMonthName(int monthNum) const{
+        cout << "const getValidMonthName(...) called." << endl;
+        if(monthNum >= 1 && monthNum <= 12){
+            return m_monthArr.at(monthNum);
+        }
+    }
+
+    /**
+     * Non-const function. This gets called if `Generic obj` is declared.
+     * We want to call the const version of this function to avoid code duplication, there is no direct way. 
+    */
+    std::string& getValidMonthName(int monthNum){
+        cout << "Non-const getValidMonthName(...) called." << endl;
+        return const_cast<std::string&>(                                    // 02. Remove the const from the return value.
+            static_cast<const Generic>(*this).getValidMonthName(monthNum)   // 01. Cast the "non-const" instance of Generic into a const one.
+        );
     }
 
     
@@ -70,6 +96,8 @@ private:
 
 /**
  * \brief Demonstrates various uses of const pointer or const-data pointer
+ * \note In following example, we've changed the data that the pointer points to but we can't do the same references.
+ * \ref https://stackoverflow.com/a/7713317
 */
 void runConstIterators(){
     std::vector<int> intVec = {1, 45, 24, 34, 53, 10, 23};
@@ -90,7 +118,7 @@ void runConstIterators(){
     // ++(*vecConstDataItr);    // Error as we are trying to change data.
     vecConstDataItr++;
 
-    // 3. const iterator: The iterator (pointer) cannot be changed, data it points to can be. 
+    // 3. const iterator: The iterator (pointer) cannot be changed, data it points to can be.    
     const std::vector<int>::iterator vecConstItr = intVec.begin();
     ++(*vecConstItr);
     // vecConstItr++;           // Error as we are trying to change what the pointer points to. 
@@ -109,23 +137,32 @@ void typesOfConst(){
      * getFirstMonthName() should returns a const data-pointer 
      */ 
     Generic obj;
-    std::string* monthPtr = obj.getFirstMonthName();
+    std::string* monthPtr = obj.getMonthNamePtr();
     *monthPtr = "Sep";
-    cout <<  "Modified Month: " << *obj.getFirstMonthName() << endl;
+    cout <<  "Modified Month: " << *obj.getMonthNamePtr() << endl;
 
     /**
      * 2. Logical const
      * If you anyway want to mutate a member variable in a const function, use the mutable keyword.
     */
-   std::string* monthNameItr = obj.getMonthName(1);
+   std::string* monthNameItr = obj.getMonthNamePtr(1);
    *monthNameItr = "Jun";
-   cout <<  "Modified Month: " << *obj.getMonthName(1) << endl;
+   cout <<  "Modified Month: " << *obj.getMonthNamePtr(1) << endl;
+}
+
+void constNonConstFunc(){
+    const Generic constObj;
+    Generic obj;
+
+    // constObj.getValidMonthName(1);
+    obj.getValidMonthName(1);
 }
 
 int main(){
 
     // runConstIterators();
-    typesOfConst();
+    // typesOfConst();
+    constNonConstFunc();
 
     return 0;
 }
