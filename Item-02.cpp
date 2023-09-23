@@ -66,10 +66,13 @@ public:
     /**
      * \brief Const function. This directly gets called if `const Generic obj` is declared.
     */
-    const std::string& getValidMonthName(int monthNum) const{
+    const std::string* getValidMonthName(int monthNum) const{
         cout << "const getValidMonthName(...) called." << endl;
         if(monthNum >= 1 && monthNum <= 12){
-            return m_monthArr.at(monthNum);
+            return &m_monthArr.at(monthNum);
+        }
+        else{
+            return nullptr;
         }
     }
 
@@ -77,9 +80,9 @@ public:
      * Non-const function. This gets called if `Generic obj` is declared.
      * We want to call the const version of this function to avoid code duplication, there is no direct way. 
     */
-    std::string& getValidMonthName(int monthNum){
+    std::string* getValidMonthName(int monthNum){
         cout << "Non-const getValidMonthName(...) called." << endl;
-        return const_cast<std::string&>(                                    // 02. Remove the const from the return value.
+        return const_cast<std::string*>(                                    // 02. Remove the const from the return value.
             static_cast<const Generic>(*this).getValidMonthName(monthNum)   // 01. Cast the "non-const" instance of Generic into a const one.
         );
     }
