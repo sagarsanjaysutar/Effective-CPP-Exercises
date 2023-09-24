@@ -8,6 +8,10 @@
  * 2. Item 28: If Class B is within Class A & it's declared as the first data member, then Class A & Class B will have same addresses.
  *  This continues downstream as well i.e. if Class C is within Class B as the first data member, then Class A, B & C will have same addresses.
  * \ref https://stackoverflow.com/a/14481302
+ * 
+ * 3. Stack vs Heap
+ * - Stack: Where local variables/object get stored. Objects get deleted once out of scope. For limited use only, can't make huge objects.
+ * - Heap: Objects initialised with new keyword. Must be manually freed.
  */
 
 #include <iostream>
