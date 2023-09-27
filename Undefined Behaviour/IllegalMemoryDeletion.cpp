@@ -19,7 +19,7 @@ int main(){
     cout << "2\n";
     delete p2;          // Address deleted.
     cout << "3\n";
-    // Seg fault here, because we've manaully deleted a stack variable 
+    // Seg fault here, because we've manually deleted a stack variable 
     // which in itself is responsible for automatically deleting stack variable.
     return 0;
 }
