@@ -3,9 +3,7 @@
  * 
  * Resources can be dynamically allocated memory, file descriptors, mutex locks, database connections,
  * network sockets, etc. These are generally allocated on the heap, not on stack.
- * 
  * It's best to have a resource manager as opposed to manually freeing them. 
- * 
  * 
 */
 
