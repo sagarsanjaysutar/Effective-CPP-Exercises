@@ -21,5 +21,13 @@
 
     ```cpp
         Random obj, obj1;
-        obj1 = obj;
+        obj1 = obj;        
     ```
+
+1. Array Pointers
+
+   ```cpp
+    // Same
+    <type> *a = &arr[0]; or <type> *a = arr;
+    cout << *a; or cout << a[0]
+   ```

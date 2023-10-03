@@ -1,10 +1,12 @@
 /**
  * \brief Item 13: Use objects to manage resources.
  * 
- * Resources can be dynamically allocated memory, file descriptors, mutex locks, database connections,
- * network sockets, etc. These are generally allocated on the heap, not on stack.
+ * Resources can be on stack or heap. They can be dynamically allocated memory (using new keyword), file descriptors,
+ * mutex locks, database connections, network sockets, etc. These are generally allocated on the heap, not on stack.
  * It's best to have a resource manager as opposed to manually freeing them. 
  * 
+ * Smart pointers like std::auto & std::shared are manifestation of "heap" based resource-managing classes.
+ * Using it for "stack" based resources isn't a good idea.
 */
 
 #include <iostream>
