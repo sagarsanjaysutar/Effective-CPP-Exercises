@@ -59,7 +59,7 @@ std::string runCmd(const std::string cmdStr, int &exitStatus){
 
 int main(){
     int exitStatus;
-    std::string cmdOutputStr = runCmd("lxs -alh", exitStatus);
+    std::string cmdOutputStr = runCmd("ls -alh", exitStatus);
     cout << cmdOutputStr << "\t" << exitStatus << endl;
     return 0;
 }
