@@ -9,7 +9,8 @@ using namespace std;
 
 class File{
 public:
-    File(std::string filePath, std::ios_base::openmode operationMode = std::ios::out | std::ios::in) :
+    File(std::string filePath, std::ios_base::openmode operationMode = std::ios::out) :
+    m_filePath(filePath),
     m_file(filePath, operationMode)
     {
         cout << "File: Default Constructor called. " << this << endl;
@@ -17,48 +18,84 @@ public:
 
     ~File(){
         cout << "File: Destructor called. " << this << endl;
-        m_file.close();
+        close();
     }
 
     void write(std::string data){
-        cout << "write 0\n";
         if(isOpen()){
-            cout << "write 1\n";
             m_file.write(data.c_str(), data.length());
-            cout << "write 2\n";
-            
         }
-        cout << "write 3\n";
+        else{
+            cout << "File: Can't write to a closed file.\n";
+        }
     }
-
-    bool isOpen(){ return m_file.is_open(); }
-
+    
+    //!< \deprecated This has been depreciated due to overcomplicated logic. Use fileToByteVec instead.
     boost::asio::const_buffer convertFileToBuffer(){
         if(isOpen()){
-            m_byteDataVec.clear();
+            // Clears any previous flag on the files like EOS & resets it's internal pointer.
             m_file.clear();
             m_file.seekg(0);
-            cout << "eof " << m_file.eof();
+
+            std::vector<char> bufferByteVec;
             std::string fileLine;
             while(getline(m_file, fileLine)){
-                cout << "\ncc " << fileLine << endl;
-                // std::vector<char> bytes(fileLine.begin(), fileLine.end());
-                // const char *cStr = fileLine.c_str() + '\0';
-                for(char byte : fileLine){
-                    m_byteDataVec.push_back(byte);
-                }
-                m_byteDataVec.push_back('\n');
+                for(char byte : fileLine)
+                    bufferByteVec.push_back(byte);
+                bufferByteVec.push_back('\n');
             }           
-            cout << "\nxx \t" << m_byteDataVec.size() <<"\n";
-            return boost::asio::const_buffer(m_byteDataVec.data(), m_byteDataVec.size());
+            return boost::asio::const_buffer(bufferByteVec.data(), bufferByteVec.size());
+        }
+        else{
+            cout << "File not open;\n";            
+        }
+    }
+
+    //!< \brief Returns a byte vector of the file contents.
+    std::vector<char> fileToByteVec(){
+        if(isOpen()){
+            cout << "fileToByteVec 0" << endl;
+            int fileSize = getSize() ;
+            cout << "fileToByteVec 1" << endl;
+
+            char buffer[fileSize];
+            cout << "fileToByteVec 2" << endl;
+            m_file.read(buffer, fileSize);
+            cout << "fileToByteVec 3" << endl;
+            return std::vector<char>(buffer, buffer + fileSize);
+        }
+        else{
+            cout << "File not open;\n";            
+        }
+    }
+
+    //!< \brief Checks if file is open.
+    bool isOpen(){ return m_file.is_open(); }
+
+    //!< \brief Closes the file.
+    void close(){
+        if(isOpen()){
+            m_file.close();
+        }
+    }
+
+    //!< \brief Returns total file size.
+    int getSize(){
+        if(isOpen()){
+            m_file.seekg(0, std::ios_base::end);
+            streampos fileSize = m_file.tellg();
+            m_file.seekg(0, std::ios_base::beg);
+            return fileSize;
         }
         else{
             cout << "File not open;\n";
+            return 0;       
         }
     }
+
 private:
     fstream m_file;
-    std::vector<char> m_byteDataVec;
+    std::string m_filePath;
 };
 
 
@@ -90,7 +127,10 @@ int main(int argc, char *argv[]){
     //     delete[] str;
     // }
     // std::vector<std::vector<char> dataVec(dataStr.begin(), dataStr.end());
-    udpSocket.send_to(file.convertFileToBuffer(), serverEndpoint);
+
+
+    // udpSocket.send_to(file.convertFileToBuffer(), serverEndpoint);
+    udpSocket.send_to(boost::asio::buffer(file.fileToByteVec().data(), file.getSize()), serverEndpoint);
     // return 0;
     cout << "2\n";
     std::array<char, 10> receivedACK;
