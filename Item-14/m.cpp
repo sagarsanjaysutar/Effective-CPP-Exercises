@@ -43,15 +43,21 @@ std::vector<char> convertFileToBuffer(std::fstream &file){
 int main() {
     // Create an fstream object and open a file in read and write mode
     std::ios_base::openmode operationMode = std::ios::in | std::ios::out;
-    std::fstream file("random.txt", operationMode);
-
-    cout << "  " << operationMode << endl;
+    std::fstream file;
+    file.open("random.txt", operationMode);
+    
+    // std::fstream file2;("random.txt", operationMode);
 
     // Check if the file was opened successfully
     if (!file.is_open()) {
         std::cerr << "Failed to open the file." << std::endl;
-        return 1;
+        // return 1;
     }
+    file.open("random.txt", operationMode);
+    if(!file.is_open()){
+        std::cerr << "Failed to open the file." << std::endl;
+    }
+    return 0;
 
     // // Write data to the file
     // file << "Hello, World!" << std::endl;
