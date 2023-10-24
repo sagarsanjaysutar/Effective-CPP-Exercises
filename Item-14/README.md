@@ -1,7 +1,7 @@
 # Item 14: Think carefully about copying behaviour in resource-managing classes
 
 The dir. contains UDP based Server, Client & a File Manager. File Manager is the resource managing class for
-fstream based files.
+fstream based files. The copying behaviour is implemented in File Manager's copy constructor.
 
 ## Execution & Expected output
 
