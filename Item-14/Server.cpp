@@ -87,9 +87,7 @@ private:
             cout << "Client: Failed to bind the socket to the localhost with port " << PORT_NUMBER;
             cout << ": " << ex.what() << endl;
         }
-    }
-
-   
+    }   
 };
 
 int main()
