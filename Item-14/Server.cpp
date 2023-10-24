@@ -1,7 +1,3 @@
-/**
- * \brief Item 14: Think carefully about copying behaviour in resource-managing classes.
- */
-
 #include <iostream>
 #include <boost/asio.hpp>
 #include <fstream>
@@ -13,6 +9,9 @@ using namespace boost::asio;
 using boost::asio::ip::udp;
 using namespace std;
 
+/**
+ * \brief A UDP based Server which waits for the client to send data, writes it to a file & appends additional data as well.
+*/
 class Server{
 public:
     Server() : m_udpSocket(m_ioContext){
@@ -101,6 +100,7 @@ int main()
 
     File file("server.txt", std::ios::out);
     file.write(std::string(receivedStrBuffer.begin(), receivedStrBuffer.end()));
+    file.write(std::string("Stuff written by Server.\n"));
 
     return 0;
 }

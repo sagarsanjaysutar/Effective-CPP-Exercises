@@ -10,6 +10,9 @@ using namespace boost::asio;
 using boost::asio::ip::udp;
 using namespace std;
 
+/**
+ * \brief A UDP based client which opens a File, writes some data to it & then sends it to a server.
+*/
 class Client{
 public:
     Client() : m_udpSocket(m_ioContext){
@@ -93,8 +96,8 @@ int main(int argc, char *argv[]){
     File file("/home/ssutar/Tutorials/Effective-CPP/Item-14/client.txt");
     file.write("Stuff written by Client.\n");
 
-    // Client obj;
-    // obj.sendByteData(file.fileToByteVec());
+    Client obj;
+    obj.sendByteData(file.fileToByteVec());
 
     return 0;
 }

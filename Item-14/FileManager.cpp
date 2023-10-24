@@ -2,9 +2,8 @@
 #include <fstream>
 #include <vector>
 #include <memory>
-#include <chrono>
-#include <thread>
 #include <cstring>
+
 using namespace std;
 
 /**
@@ -14,14 +13,17 @@ class File{
 public:
     File(std::string filePath, std::ios_base::openmode operationMode = std::ios_base::in | std::ios_base::out) :
     m_operationMode(operationMode),
-    m_filePath(filePath),
-    m_filePtr(std::shared_ptr<fstream>(new fstream(filePath, operationMode), fileDeleter))
+    m_filePath(filePath)
     {
-        cout << "xxx \t " << std::ios::in << "\n";
-        cout << "xxx \t " << std::ios::out << "\n";
-        cout << "xxx \t " << m_filePtr.get()->is_open() << "\n";
-        cout << "File: Default Constructor called. " << this;
-        cout << " | fstream created " << m_filePtr.get() << endl;
+        // File exists
+        if(ifstream(m_filePath).good()){
+            cout << "File: File exists. Opening it. \t" << m_filePath << endl;
+            m_filePtr = std::shared_ptr<fstream>(new fstream(filePath, operationMode), fileDeleter);
+        }
+        else{
+            cout << "File: File doesn't exists. Creating one. \t" << m_filePath << endl;
+            m_filePtr = std::shared_ptr<fstream>(new fstream(filePath, std::ios_base::out), fileDeleter);
+        }
     }
     
     //!< \brief Copy Constructor
@@ -63,6 +65,7 @@ public:
         if(isOpen()){
             m_filePtr.get()->write(data.c_str(), data.length());
             cout << "File: Written " << data.size() << " bytes to " << m_filePath << endl;
+            // cout << "Data \t" << data << endl;
         }
         else{
             cout << "File: Can't write to a closed file.\n";
@@ -112,7 +115,6 @@ private:
     std::ios_base::openmode m_operationMode;
 };
 
-
 /**============= Following are testing function for the FileManager class =============*/
 /**
  * \brief In this function we test whether the File's shared pointer keep the underlying fstream alive.
@@ -139,8 +141,6 @@ private:
 //     cout << "basicTest() ended.\n";
 // }
 // int main(){
-//     cout << "======================= File Manager Creation/Deletion =======================\n";
 //     basicTest();
-//     cout << "==============================================================================\n";
 //     return 0;
 // }
